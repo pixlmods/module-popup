@@ -1,0 +1,23 @@
+<?php
+/**
+ * Copyright © Pixl Mods. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var \PixlMods\Popup\Block\Frontend\Popup $block */
+$popup = $block->getPopupContent();
+?>
+
+<?php if (!empty($popup)): ?>
+    <div id="pixlmods-popup" hidden>
+        <div class="modal-body-content"><?= $popup; ?></div>
+    </div>
+
+    <script type="text/x-magento-init">
+        {
+            "*": {
+                "PixlMods_Popup/js/view/popup": {}
+            }
+        }
+    </script>
+<?php endif; ?>
