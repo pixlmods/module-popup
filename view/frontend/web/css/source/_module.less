@@ -1,0 +1,43 @@
+//
+// All
+// _____________________________________________
+& when (@media-common = true) {
+    body {
+        &._has-modal {
+            .pixlmods-popup {
+                left: 0;
+                right: 0;
+
+                .modal-inner-wrap {
+                    h2 {
+                        margin-top: 0;
+                    }
+
+                    p {
+                        font-size: 16px;
+                        color: #333;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//
+// Desktop
+// _____________________________________________
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    body {
+        &._has-modal {
+            .pixlmods-popup {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .modal-inner-wrap {
+                    width: 650px;
+                }
+            }
+        }
+    }
+}

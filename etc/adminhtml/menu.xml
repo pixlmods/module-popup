@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Copyright © Pixl Mods. All rights reserved.
+* See COPYING.txt for license details.
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Magento_Backend::content_popup" title="Popup" module="Magento_Backend" sortOrder="30" parent="Magento_Backend::content" resource="PixlMods_Popup::popup"/>
+        <add id="PixlMods_Popup::popup" title="Popup Settings" module="PixlMods_Popup" sortOrder="10" parent="Magento_Backend::content_popup" dependsOnModule="PixlMods_Popup" action="pixlmods/popup/index" resource="PixlMods_Popup::popup"/>
+    </menu>
+</config>
