@@ -11,8 +11,12 @@
             <resource id="Magento_Backend::admin">
                 <resource id="PixlMods_Popup::popup" title="Popup Settings" translate="title" sortOrder="10"/>
                 <resource id="PixlMods_Popup::report" title="Popup Reports" translate="title" sortOrder="20" />
-                <resource id="Magento_Config::config">
-                    <resource id="PixlMods_Popup::config" title="Popup Configuration" translate="title" sortOrder="500"/>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="PixlMods_Popup::config" title="Popup Configuration" translate="title" sortOrder="500"/>
+                        </resource>
+                    </resource>
                 </resource>
             </resource>
         </resources>
