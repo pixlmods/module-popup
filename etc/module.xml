@@ -9,7 +9,7 @@
     <module name="PixlMods_Popup">
         <sequence>
             <module name="Magento_Ui"/>
-            <module name="Magento_Admin"/>
+            <module name="Magento_Backend"/>
         </sequence>
     </module>
 </config>

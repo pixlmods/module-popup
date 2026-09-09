@@ -1,0 +1,40 @@
+{
+    "name": "pixlmods/module-popup",
+    "description": "Magento 2 module for configurable frontend popups with display rules (page, store, customer group, date, trigger, frequency) and engagement reporting.",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "type": "magento2-module",
+    "keywords": [
+        "pixlmods",
+        "magento2",
+        "Popup",
+        "Marketing",
+        "Popup Builder"
+    ],
+    "authors": [
+        {
+            "name": "Pixl Mods",
+            "email": "dev@pixlmods.com"
+        }
+    ],
+    "homepage": "https://github.com/pixlmods/module-popup",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0",
+        "magento/framework": "*",
+        "magento/module-backend": "*",
+        "magento/module-ui": "*",
+        "magento/module-customer": "*",
+        "magento/module-cms": "*",
+        "magento/module-store": "*",
+        "magento/module-config": "*"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "PixlMods\\Popup\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}
