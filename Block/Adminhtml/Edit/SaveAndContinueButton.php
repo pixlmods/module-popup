@@ -11,7 +11,7 @@ namespace PixlMods\Popup\Block\Adminhtml\Edit;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use PixlMods\Popup\Block\Adminhtml\Edit\GenericButton;
 
-class SaveButton extends GenericButton implements ButtonProviderInterface
+class SaveAndContinueButton extends GenericButton implements ButtonProviderInterface
 {
     /**
      * @inheritdoc
@@ -21,10 +21,12 @@ class SaveButton extends GenericButton implements ButtonProviderInterface
     public function getButtonData()
     {
         return [
-            'label' => __('Save'),
-            'class' => 'save primary',
+            'label' => __('Save and Continue Edit'),
+            'class' => 'save',
             'data_attribute' => [
-                'mage-init' => ['button' => ['event' => 'save']],
+                'mage-init' => [
+                    'button' => ['event' => 'saveAndContinueEdit']
+                ],
                 'form-role' => 'save'
             ],
             'sort_order' => 40,

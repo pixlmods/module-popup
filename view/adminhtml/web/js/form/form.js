@@ -5,8 +5,9 @@
 
 define([
     'Magento_Ui/js/form/form',
-    'Magento_Ui/js/modal/confirm'
-], function (Form, confirm) {
+    'Magento_Ui/js/modal/confirm',
+    'mage/translate'
+], function (Form, confirm, $t) {
     'use strict';
 
     return Form.extend({
@@ -17,8 +18,8 @@ define([
          */
         deletePopup: function (url) {
             confirm({
-                title: 'Delete Popup',
-                content: 'Are you sure you want to delete this popup?',
+                title: $t('Delete Popup'),
+                content: $t('Are you sure you want to delete this popup?'),
                 actions: {
                     confirm: function () {
                         window.location.href = url;

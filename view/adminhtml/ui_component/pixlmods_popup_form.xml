@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright © Pixl Mods. All rights reserved.
-* See COPYING.txt for license details.
-*/
+ * Copyright © Pixl Mods. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 -->
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
@@ -22,9 +22,10 @@
 
     <settings>
         <buttons>
-            <button name="save" class="PixlMods\Popup\Block\Adminhtml\Edit\SaveButton"/>
-            <button name="delete" class="PixlMods\Popup\Block\Adminhtml\Edit\DeleteButton"/>
             <button name="back" class="PixlMods\Popup\Block\Adminhtml\Edit\BackButton"/>
+            <button name="delete" class="PixlMods\Popup\Block\Adminhtml\Edit\DeleteButton"/>
+            <button name="save_and_continue" class="PixlMods\Popup\Block\Adminhtml\Edit\SaveAndContinueButton"/>
+            <button name="save" class="PixlMods\Popup\Block\Adminhtml\Edit\SaveButton"/>
         </buttons>
         <namespace>pixlmods_popup_form</namespace>
         <dataScope>data</dataScope>
@@ -150,7 +151,82 @@
                 </date>
             </formElements>
         </field>
-        <field name="pages" sortOrder="60" formElement="multiselect">
+        <field name="trigger_type" sortOrder="60" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Trigger Type</label>
+                <dataScope>trigger_type</dataScope>
+                <notice translate="true">When the popup should attempt to display.</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="PixlMods\Popup\Model\Source\TriggerType"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="trigger_value" sortOrder="70" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string"></item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Trigger Value</label>
+                <dataScope>trigger_value</dataScope>
+                <notice translate="true"><![CDATA[Scroll Percentage: number 0-100 (e.g. 50). Time on Page: seconds (e.g. 15). Click on Element: CSS selector (e.g. #add-to-cart-button). On Page Load / Exit Intent: leave empty.]]></notice>
+            </settings>
+        </field>
+        <field name="frequency" sortOrder="80" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Display Frequency</label>
+                <dataScope>frequency</dataScope>
+                <notice translate="true">How often the popup can be shown to the same visitor.</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="PixlMods\Popup\Model\Source\Frequency"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="priority" sortOrder="90" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">10</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Priority</label>
+                <dataScope>priority</dataScope>
+                <notice translate="true">Lower number = higher priority when multiple popups qualify at once.</notice>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="display_delay" sortOrder="100" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Display Delay (seconds)</label>
+                <dataScope>display_delay</dataScope>
+                <notice translate="true">Extra wait time, in seconds, before the trigger is armed / the popup appears.</notice>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="pages" sortOrder="110" formElement="multiselect">
             <settings>
                 <dataType>text</dataType>
                 <label translate="true">CMS Pages</label>
@@ -167,11 +243,8 @@
                 </multiselect>
             </formElements>
         </field>
-        <field name="customer_group_ids" sortOrder="70" formElement="multiselect">
+        <field name="customer_group_ids" sortOrder="120" formElement="multiselect">
             <settings>
-                <validation>
-                    <rule name="required-entry" xsi:type="boolean">true</rule>
-                </validation>
                 <dataType>text</dataType>
                 <label translate="true">Customer Groups</label>
                 <dataScope>customer_group_ids</dataScope>
@@ -185,13 +258,13 @@
                 </multiselect>
             </formElements>
         </field>
-        <field name="stores" sortOrder="70" formElement="multiselect">
+        <field name="stores" sortOrder="130" formElement="multiselect">
             <settings>
                 <validation>
                     <rule name="required-entry" xsi:type="boolean">true</rule>
                 </validation>
                 <dataType>number</dataType>
-                <label translate="true">Websites</label>
+                <label translate="true">Store View</label>
                 <dataScope>stores</dataScope>
             </settings>
             <formElements>

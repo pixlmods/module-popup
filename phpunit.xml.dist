@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Pixl Mods. All rights reserved.
+ * See COPYING.txt for license details.
+ *
+ * Run from this directory with the project's PHPUnit binary, e.g.:
+ *   php ../../../../vendor/bin/phpunit -c phpunit.xml.dist
+ */
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="./Test/Unit/bootstrap.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="PixlMods_Popup Unit Tests">
+            <directory>./Test/Unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

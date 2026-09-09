@@ -17,4 +17,25 @@
             <argument name="popupFactory" xsi:type="object">PixlMods\Popup\Model\PopupFactory</argument>
         </arguments>
     </type>
+
+    <!-- Applies grid filters/sorting/paging (from the UI Component request) onto our plain collections -->
+    <virtualType name="PixlMods\Popup\Model\Api\SearchCriteria\CollectionProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor</item>
+                <item name="sorting" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\SortingProcessor</item>
+                <item name="pagination" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\PaginationProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="PixlMods\Popup\Ui\Component\Listing\DataProvider">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">PixlMods\Popup\Model\Api\SearchCriteria\CollectionProcessor</argument>
+        </arguments>
+    </type>
+    <type name="PixlMods\Popup\Ui\Component\Report\DataProvider">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">PixlMods\Popup\Model\Api\SearchCriteria\CollectionProcessor</argument>
+        </arguments>
+    </type>
 </config>

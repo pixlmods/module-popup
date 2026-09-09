@@ -13,8 +13,10 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Registry;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\View\Element\Template;
 use Magento\Store\Model\StoreManagerInterface;
+use PixlMods\Popup\Model\Config;
 use PixlMods\Popup\Model\ResourceModel\Popup\CollectionFactory;
 use PixlMods\Popup\Model\Source\FrontendPages;
 
@@ -29,26 +31,38 @@ class Popup extends Template
         protected readonly Registry $registry,
         protected readonly ScopeConfigInterface $scopeConfig,
         protected readonly CustomerSession $customerSession,
+        protected readonly JsonSerializer $jsonSerializer,
+        protected readonly Config $config,
         array $data = []
     ) {
         parent::__construct($context, $data);
     }
 
     /**
-     * Return popup content
+     * Return all eligible popups (store/date/page/customer-group filters already applied),
+     * ordered by priority (lower number = higher priority), with the trigger metadata
+     * the frontend JS needs to decide which one to display and when.
+     *
+     * @return array
      */
-    public function getPopupContent(): ?string
+    public function getPopupsData(): array
     {
         try {
             $storeId = (int) $this->storeManager
                 ->getStore()
                 ->getId();
         } catch (\Exception $e) {
-            return null;
+            return [];
+        }
+
+        if (!$this->config->isActive($storeId)) {
+            return [];
         }
 
         $collection = $this->popupCollectionFactory->create()
             ->addFieldToFilter('status', 1);
+
+        $result = [];
 
         foreach ($collection as $popup) {
             if (!$this->isAllowedStore($popup, $storeId)) {
@@ -67,18 +81,59 @@ class Popup extends Template
                 continue;
             }
 
-            return $this->filterProvider
-                ->getPageFilter()
-                ->filter($popup->getContent());
+            $result[] = [
+                'id' => (int)$popup->getId(),
+                'content' => $this->filterProvider->getPageFilter()->filter((string)$popup->getContent()),
+                'trigger_type' => (string)$popup->getTriggerType(),
+                'trigger_value' => (string)$popup->getTriggerValue(),
+                'frequency' => (string)$popup->getFrequency(),
+                'priority' => (int)$popup->getPriority(),
+                'display_delay' => max(0, (int)$popup->getDisplayDelay()),
+            ];
         }
 
-        return null;
+        usort($result, static fn(array $a, array $b): int => $a['priority'] <=> $b['priority']);
+
+        return $result;
     }
 
     /**
-     * Converte uma string "a,b,c" em array, preservando valores como '0'
-     * (ex: grupo "NOT LOGGED IN" ou store "All Store Views"), que o
-     * array_filter() padrão removeria por serem "falsy" em PHP.
+     * Popups data, safely JSON-encoded, ready to embed inside a
+     * <script type="text/x-magento-init"> block as the widget's config.
+     *
+     * The popup HTML content is base64-encoded so it can never contain the
+     * "</script>" sequence (the base64 alphabet has no "<" or ">" characters),
+     * which would otherwise be able to prematurely close the script tag.
+     */
+    public function getPopupsDataJson(): string
+    {
+        $popups = array_map(
+            static function (array $popup): array {
+                $popup['content'] = base64_encode($popup['content']);
+                return $popup;
+            },
+            $this->getPopupsData()
+        );
+
+        $json = $this->jsonSerializer->serialize($popups);
+
+        return str_replace('</', '<\/', $json);
+    }
+
+    /**
+     * Cookie lifetime, in days, for the "Once per Day" display frequency.
+     *
+     * @return int
+     */
+    public function getDayFrequencyLifetime(): int
+    {
+        return $this->config->getDayFrequencyLifetime();
+    }
+
+    /**
+     * Converts a "a,b,c" string into an array, preserving values ​​like '0'
+     * (e.g., group "NOT LOGGED IN" or store "All Store Views"), which
+     * the standard array_filter() would remove because they are "falsy" in PHP.
      *
      * @param string|null $value
      * @return string[]
@@ -97,7 +152,7 @@ class Popup extends Template
     /**
      * Validate store
      *
-     * '0' representa "Todos os Store Views" (padrão do multiselect de store do Magento)
+     * '0' represents "All Store Views" (Magento's default for the store multiselect)
      */
     private function isAllowedStore($popup, int $storeId): bool
     {
@@ -114,11 +169,11 @@ class Popup extends Template
     /**
      * Validate dates
      *
-     * Regras:
-     * - Sem start e sem end -> sempre válido
-     * - Só start -> válido a partir da data/hora de início, sem limite final
-     * - Só end -> válido até a data/hora final, sem limite inicial
-     * - Ambos -> válido dentro do intervalo
+     * Rules:
+     * - No start and no end -> always valid
+     * - Start only -> valid from the start date/time, no end limit
+     * - End only -> valid until the end date/time, no start limit
+     * - Both -> valid within the range
      */
     private function isAllowedDate($popup): bool
     {
@@ -142,7 +197,6 @@ class Popup extends Template
         if ($endDate) {
             $end = new \DateTimeImmutable((string)$endDate);
 
-            // Se foi salva apenas a data (sem horário), considera válido até o fim do dia
             if ($end->format('H:i:s') === '00:00:00') {
                 $end = $end->setTime(23, 59, 59);
             }
@@ -158,10 +212,10 @@ class Popup extends Template
     /**
      * Validate page
      *
-     * O campo "pages" pode conter:
-     * - FrontendPages::ALL_PAGES_VALUE -> exibe em qualquer página
-     * - layout handles de páginas de plataforma (ex: checkout_cart_index)
-     * - identifiers de páginas CMS (ex: sobre-nos)
+     * The "pages" field can contain:
+     * - FrontendPages::ALL_PAGES_VALUE -> displays on any page
+     * - platform page layout handles (e.g., checkout_cart_index)
+     * - CMS page identifiers (e.g., about-us)
      */
     private function isAllowedPage($popup): bool
     {
@@ -193,9 +247,9 @@ class Popup extends Template
     /**
      * Validate customer group
      *
-     * Campo é opcional: se nenhum grupo for selecionado no admin,
-     * o popup é exibido para todos os grupos (visitante, logado, VIP, etc).
-     * O grupo "NOT LOGGED IN" (id 0) já cobre o visitante nativamente.
+     * Field is optional: if no group is selected in the admin,
+     * the popup is displayed for all groups (guest, logged-in, VIP, etc.).
+     * The "NOT LOGGED IN" group (ID 0) natively covers guests.
      */
     private function isAllowedCustomerGroup($popup): bool
     {
@@ -213,8 +267,8 @@ class Popup extends Template
     /**
      * Get current CMS page identifier
      *
-     * Cobre tanto páginas CMS "normais" (via registry cms_page)
-     * quanto a home page configurada em Stores > Configuration > Web
+     * Covers both "normal" CMS pages (via the cms_page registry)
+     * and the home page configured under Stores > Configuration > Web
      */
     private function getCurrentCmsPageIdentifier(): ?string
     {

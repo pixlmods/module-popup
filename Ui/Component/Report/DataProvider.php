@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace PixlMods\Popup\Ui\Component\Listing;
+namespace PixlMods\Popup\Ui\Component\Report;
 
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\Search\ReportingInterface;
@@ -14,14 +14,14 @@ use Magento\Framework\Api\Search\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider as MageDataProvider;
-use PixlMods\Popup\Model\ResourceModel\Popup\CollectionFactory;
+use PixlMods\Popup\Model\ResourceModel\Popup\Report\CollectionFactory;
 
 class DataProvider extends MageDataProvider
 {
     public function __construct(
-        $name,
-        $primaryFieldName,
-        $requestFieldName,
+        string $name,
+        string $primaryFieldName,
+        string $requestFieldName,
         ReportingInterface $reporting,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         RequestInterface $request,

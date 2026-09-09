@@ -16,6 +16,8 @@ use PixlMods\Popup\Model\PopupFactory;
 
 class Edit extends Action
 {
+    const ADMIN_RESOURCE = 'PixlMods_Popup::popup';
+
     public function __construct(
         Context $context,
         protected readonly PageFactory $resultPageFactory,

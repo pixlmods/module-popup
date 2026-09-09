@@ -12,11 +12,15 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use PixlMods\Popup\Model\PopupFactory;
+use PixlMods\Popup\Model\Source\Frequency;
 use PixlMods\Popup\Model\Source\FrontendPages;
+use PixlMods\Popup\Model\Source\TriggerType;
 use Psr\Log\LoggerInterface;
 
 class Save extends Action implements HttpPostActionInterface
 {
+    const ADMIN_RESOURCE = 'PixlMods_Popup::popup';
+
     public function __construct(
         Context $context,
         protected PopupFactory $popupFactory,
@@ -65,6 +69,26 @@ class Save extends Action implements HttpPostActionInterface
             $data['start_date'] = $this->prepareDateValue($data['start_date'] ?? null);
             $data['end_date'] = $this->prepareDateValue($data['end_date'] ?? null);
 
+            $data['trigger_type'] = !empty($data['trigger_type'])
+                ? (string)$data['trigger_type']
+                : TriggerType::ON_LOAD;
+
+            $data['trigger_value'] = isset($data['trigger_value'])
+                ? trim((string)$data['trigger_value'])
+                : '';
+
+            $data['frequency'] = !empty($data['frequency'])
+                ? (string)$data['frequency']
+                : Frequency::ALWAYS;
+
+            $data['priority'] = isset($data['priority']) && is_numeric($data['priority'])
+                ? (int)$data['priority']
+                : 10;
+
+            $data['display_delay'] = isset($data['display_delay']) && is_numeric($data['display_delay'])
+                ? max(0, (int)$data['display_delay'])
+                : 0;
+
             $model->setData($data);
 
             if (!$id) {
@@ -74,6 +98,14 @@ class Save extends Action implements HttpPostActionInterface
             $model->save();
 
             $this->messageManager->addSuccessMessage(__('Popup saved successfully.'));
+
+            if ($this->getRequest()->getParam('back')) {
+                return $this->_redirect('*/*/edit', [
+                    'entity_id' => $model->getId(),
+                    '_current' => true
+                ]);
+            }
+
             return $this->_redirect('*/*/');
         } catch (\Exception $e) {
             $this->logger->error('Popup Save Error: ' . $e->getMessage(), ['exception' => $e]);
@@ -84,10 +116,10 @@ class Save extends Action implements HttpPostActionInterface
     }
 
     /**
-     * Converte o array vindo do multiselect em string separada por vírgula.
+     * Converts the array from the multiselect into a comma-separated string.
      *
-     * Se um "valor coringa" (ex: FrontendPages::ALL_PAGES_VALUE) for informado
-     * e estiver selecionado, ignora os demais valores e salva só ele.
+     * If a "wildcard value" (e.g., FrontendPages::ALL_PAGES_VALUE) is provided
+     * and selected, it ignores the other values ​​and saves only that one.
      *
      * @param array|string|null $value
      * @param string|null $wildcardValue
@@ -107,8 +139,8 @@ class Save extends Action implements HttpPostActionInterface
     }
 
     /**
-     * Normaliza campos de data: string vazia vira null,
-     * pra não quebrar a coluna datetime nullable no banco.
+     * Normalizes date fields: an empty string becomes null,
+     * to avoid breaking the nullable datetime column in the database.
      *
      * @param string|null $value
      * @return string|null

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright © Pixl Mods. All rights reserved.
-* See COPYING.txt for license details.
-*/
+ * Copyright © Pixl Mods. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 -->
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework/Setup/Declaration/Schema/etc/db_schema.xsd">
     <table name="pixlmods_popup" resource="default" engine="innodb" comment="PixlMods Popup Table">
@@ -16,11 +16,45 @@
         <column name="customer_group_ids" xsi:type="varchar" length="255" nullable="true" comment="Customer Groups"/>
         <column name="start_date" xsi:type="datetime" nullable="true" comment="Start Date"/>
         <column name="end_date" xsi:type="datetime" nullable="true" comment="End Date"/>
+        <column name="trigger_type" xsi:type="varchar" length="32" nullable="false" default="on_load" comment="Trigger Type"/>
+        <column name="trigger_value" xsi:type="varchar" length="255" nullable="true" comment="Trigger Value"/>
+        <column name="frequency" xsi:type="varchar" length="32" nullable="false" default="always" comment="Display Frequency"/>
+        <column name="priority" xsi:type="smallint" unsigned="true" nullable="false" default="10" comment="Priority"/>
+        <column name="display_delay" xsi:type="smallint" unsigned="true" nullable="false" default="0" comment="Display Delay (seconds)"/>
         <column name="created_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column name="updated_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
+    </table>
+
+    <table name="pixlmods_popup_event" resource="default" engine="innodb" comment="Popup Event Log">
+        <column xsi:type="int" name="event_id" unsigned="true" nullable="false" identity="true" comment="Event ID"/>
+        <column xsi:type="int" name="popup_id" unsigned="true" nullable="false" comment="Popup ID"/>
+        <column xsi:type="varchar" name="event_type" length="32" nullable="false" comment="Event Type (view|close|conversion)"/>
+        <column xsi:type="varchar" name="session_id" length="255" nullable="true" comment="Session Identifier"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" comment="Store ID"/>
+        <column xsi:type="varchar" name="page_url" length="500" nullable="true" comment="Page URL"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="event_id"/>
+        </constraint>
+
+        <constraint xsi:type="foreign" referenceId="PIXLMODS_POPUP_EVENT_POPUP_ID_PIXLMODS_POPUP_ENTITY_ID"
+            table="pixlmods_popup_event" column="popup_id"
+            referenceTable="pixlmods_popup" referenceColumn="entity_id"
+            onDelete="CASCADE"/>
+
+        <index referenceId="PIXLMODS_POPUP_EVENT_POPUP_ID_EVENT_TYPE" indexType="btree">
+            <column name="popup_id"/>
+            <column name="event_type"/>
+        </index>
+
+        <index referenceId="PIXLMODS_POPUP_EVENT_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
     </table>
 </schema>

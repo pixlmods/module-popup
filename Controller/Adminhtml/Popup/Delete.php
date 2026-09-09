@@ -15,6 +15,8 @@ use Magento\Framework\Exception\LocalizedException;
 
 class Delete extends Action
 {
+    const ADMIN_RESOURCE = 'PixlMods_Popup::popup';
+
     public function __construct(
         Context $context,
         protected readonly PopupFactory $popupFactory

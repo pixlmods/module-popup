@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright © Pixl Mods. All rights reserved.
-* See COPYING.txt for license details.
-*/
+ * Copyright © Pixl Mods. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 -->
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
@@ -111,13 +111,42 @@
                 <label translate="true">End Date</label>
             </settings>
         </column>
-        <!-- <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date">
+        <column name="trigger_type" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <filter>dateRange</filter>
-                <dataType>date</dataType>
-                <label translate="true">Created</label>
+                <options class="PixlMods\Popup\Model\Source\TriggerType"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Trigger Type</label>
             </settings>
-        </column> -->
+        </column>
+        <column name="trigger_value">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Trigger Value</label>
+            </settings>
+        </column>
+        <column name="frequency" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="PixlMods\Popup\Model\Source\Frequency"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Frequency</label>
+            </settings>
+        </column>
+        <column name="priority">
+            <settings>
+                <filter>textRange</filter>
+                <dataType>number</dataType>
+                <label translate="true">Priority</label>
+            </settings>
+        </column>
+        <column name="display_delay">
+            <settings>
+                <filter>textRange</filter>
+                <dataType>number</dataType>
+                <label translate="true">Display Delay (seconds)</label>
+            </settings>
+        </column>
         <column name="updated_at" class="Magento\Ui\Component\Listing\Columns\Date">
             <settings>
                 <filter>dateRange</filter>

@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
 <!--
 /**
-* Copyright © Pixl Mods. All rights reserved.
-* See COPYING.txt for license details.
-*/
+ * Copyright © Pixl Mods. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Pixlmods_Popup::popup" title="Popups" translate="title" sortOrder="10"/>
+                <resource id="PixlMods_Popup::popup" title="Popup Settings" translate="title" sortOrder="10"/>
+                <resource id="PixlMods_Popup::report" title="Popup Reports" translate="title" sortOrder="20" />
+                <resource id="Magento_Config::config">
+                    <resource id="PixlMods_Popup::config" title="Popup Configuration" translate="title" sortOrder="500"/>
+                </resource>
             </resource>
         </resources>
     </acl>

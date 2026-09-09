@@ -7,7 +7,8 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Magento_Backend::content_popup" title="Popup" module="Magento_Backend" sortOrder="30" parent="Magento_Backend::content" resource="PixlMods_Popup::popup"/>
-        <add id="PixlMods_Popup::popup" title="Popup Settings" module="PixlMods_Popup" sortOrder="10" parent="Magento_Backend::content_popup" dependsOnModule="PixlMods_Popup" action="pixlmods/popup/index" resource="PixlMods_Popup::popup"/>
+        <add id="PixlMods_Popup::content_popup" title="Popup" translate="title" module="Magento_Backend" sortOrder="50" parent="Magento_Backend::content" resource="PixlMods_Popup::popup"/>
+        <add id="PixlMods_Popup::popup" title="Popup Settings" translate="title" module="PixlMods_Popup" sortOrder="10" parent="PixlMods_Popup::content_popup" dependsOnModule="PixlMods_Popup" action="pixlmods/popup/index" resource="PixlMods_Popup::popup"/>
+        <add id="PixlMods_Popup::report" title="Popup Reports" translate="title" module="PixlMods_Popup" sortOrder="20" parent="PixlMods_Popup::content_popup" dependsOnModule="PixlMods_Popup" action="pixlmods/report/index" resource="PixlMods_Popup::report"/>
     </menu>
 </config>

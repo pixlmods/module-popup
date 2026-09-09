@@ -5,18 +5,20 @@
  */
 
 /** @var \PixlMods\Popup\Block\Frontend\Popup $block */
-$popup = $block->getPopupContent();
+$popupsJson = $block->getPopupsDataJson();
 ?>
 
-<?php if (!empty($popup)): ?>
-    <div id="pixlmods-popup" hidden>
-        <div class="modal-body-content"><?= $popup; ?></div>
-    </div>
+<?php if ($popupsJson !== '[]'): ?>
+    <div id="pixlmods-popup-container"></div>
 
     <script type="text/x-magento-init">
         {
-            "*": {
-                "PixlMods_Popup/js/view/popup": {}
+            "#pixlmods-popup-container": {
+                "PixlMods_Popup/js/view/popup": {
+                    "popups": <?= /* @noEscape */ $popupsJson ?>,
+                    "eventUrl": "<?= $block->escapeUrl($block->getUrl('pixlmodspopup/report/event')) ?>",
+                    "dayCookieLifetime": <?= (int) $block->getDayFrequencyLifetime() ?>
+                }
             }
         }
     </script>

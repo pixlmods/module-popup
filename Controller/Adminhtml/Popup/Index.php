@@ -31,7 +31,7 @@ class Index extends Action
     public function execute()
     {
         $resultPage = $this->pageFactory->create();
-        $resultPage->setActiveMenu('Pixlmods_Popup::popup');
+        $resultPage->setActiveMenu('PixlMods_Popup::popup');
         $resultPage->getConfig()->getTitle()->prepend(__('Popup Settings'));
         return $resultPage;
     }

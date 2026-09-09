@@ -1,0 +1,45 @@
+{
+    "pixlmods_popup": {
+        "column": {
+            "entity_id": true,
+            "title": true,
+            "content": true,
+            "status": true,
+            "pages": true,
+            "stores": true,
+            "customer_group_ids": true,
+            "start_date": true,
+            "end_date": true,
+            "trigger_type": true,
+            "trigger_value": true,
+            "frequency": true,
+            "priority": true,
+            "display_delay": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "pixlmods_popup_event": {
+        "column": {
+            "event_id": true,
+            "popup_id": true,
+            "event_type": true,
+            "session_id": true,
+            "customer_id": true,
+            "store_id": true,
+            "page_url": true,
+            "created_at": true
+        },
+        "index": {
+            "PIXLMODS_POPUP_EVENT_POPUP_ID_EVENT_TYPE": true,
+            "PIXLMODS_POPUP_EVENT_CREATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "PIXLMODS_POPUP_EVENT_POPUP_ID_PIXLMODS_POPUP_ENTITY_ID": true
+        }
+    }
+}
